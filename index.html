@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root {
+      --bg: #fff7fb;
+      --text: #1b1b1b;
+      --yes: #2ecc71;
+      --no: #ff4757;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .card {
+      width: min(560px, 92vw);
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+      padding: 22px 18px 18px;
+      text-align: center;
+    }
+
+    .media {
+      width: 240px;
+      height: 240px;
+      margin: 8px auto 8px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #f3f3f3;
+      overflow: hidden;
+    }
+
+    .media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    h1 {
+      margin: 10px 0 14px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .btns {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 8px;
+      position: relative;
+      height: 70px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    #yesBtn { background: var(--yes); color: white; }
+    #noBtn  { background: var(--no);  color: white; }
+
+    /* Final screen */
+    .final {
+      display: none;
+      text-align: center;
+      padding: 26px 18px;
+    }
+
+    .final h2 {
+      font-size: 28px;
+      margin: 8px 0 14px;
+    }
+
+    .final .big {
+      font-size: 18px;
+      opacity: .85;
+    }
+
+    .hint {
+      font-size: 12px;
+      opacity: .55;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card" id="mainCard">
+    <div class="media">
+      <!-- Replace this with your Mickey GIF -->
+      <!-- Option A: local file in repo: /mickey.gif -->
+      <img id="mainImg" src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif" alt="cute gif">
+    </div>
+
+    <h1 id="question">Will you be my valentine? 💘</h1>
+
+    <div class="btns" id="btnArea">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+
+    <div class="hint">Tip: clicking “No” won’t help 😌</div>
+  </main>
+
+  <section class="card final" id="finalCard">
+    <div class="media">
+      <!-- Replace with a celebration Mickey GIF if you want -->
+      <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="yay gif">
+    </div>
+    <h2>YAYYYY!!! 🥰</h2>
+    <div class="big">Ok, now you’re officially stuck with me 💖</div>
+  </section>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const btnArea = document.getElementById("btnArea");
+
+    const mainCard = document.getElementById("mainCard");
+    const finalCard = document.getElementById("finalCard");
+
+    let yesScale = 1;
+    let noScale = 1;
+    let noClicks = 0;
+
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function moveNoButton() {
+      // Move "No" a bit randomly inside the button area
+      const rect = btnArea.getBoundingClientRect();
+      const maxX = rect.width - noBtn.offsetWidth;
+      const maxY = rect.height - noBtn.offsetHeight;
+
+      const x = Math.random() * clamp(maxX, 0, maxX);
+      const y = Math.random() * clamp(maxY, 0, maxY);
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+    }
+
+    noBtn.addEventListener("click", () => {
+      noClicks++;
+
+      // Make YES bigger every time
+      yesScale *= 1.25;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Make NO smaller (and harder)
+      noScale *= 0.88;
+      noBtn.style.transform = `scale(${noScale})`;
+
+      moveNoButton();
+
+      // After enough clicks, hide "No"
+      if (noClicks >= 8 || noScale < 0.35) {
+        noBtn.style.opacity = "0";
+        noBtn.style.pointerEvents = "none";
+      }
+
+      // If YES is huge, also prevent layout weirdness
+      if (yesScale > 3.2) {
+        btnArea.style.height = "110px";
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      mainCard.style.display = "none";
+      finalCard.style.display = "block";
+    });
+
+    // On load, if user taps "No" quickly, it’s already positioned
+    moveNoButton();
+  </script>
+</body>
+</html>  

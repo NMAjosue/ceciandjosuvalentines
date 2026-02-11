@@ -133,65 +133,38 @@
   </section>
 
   <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const btnArea = document.getElementById("btnArea");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
 
-    const mainCard = document.getElementById("mainCard");
-    const finalCard = document.getElementById("finalCard");
+  const mainCard = document.getElementById("mainCard");
+  const finalCard = document.getElementById("finalCard");
 
-    let yesScale = 1;
-    let noScale = 1;
-    let noClicks = 0;
+  let yesScale = 1;
+  let noScale = 1;
+  let noClicks = 0;
 
-    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+  noBtn.addEventListener("click", () => {
+    noClicks++;
 
-    function moveNoButton() {
-      // Move "No" a bit randomly inside the button area
-      const rect = btnArea.getBoundingClientRect();
-      const maxX = rect.width - noBtn.offsetWidth;
-      const maxY = rect.height - noBtn.offsetHeight;
+    // YES grows
+    yesScale *= 1.3;
+    yesBtn.style.transform = `scale(${yesScale})`;
 
-      const x = Math.random() * clamp(maxX, 0, maxX);
-      const y = Math.random() * clamp(maxY, 0, maxY);
+    // NO shrinks
+    noScale *= 0.8;
+    noBtn.style.transform = `scale(${noScale})`;
 
-      noBtn.style.position = "absolute";
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top  = `${y}px`;
+    // After enough clicks, remove NO completely
+    if (noClicks >= 6 || noScale < 0.3) {
+      noBtn.style.opacity = "0";
+      noBtn.style.pointerEvents = "none";
     }
+  });
 
-    noBtn.addEventListener("click", () => {
-      noClicks++;
-
-      // Make YES bigger every time
-      yesScale *= 1.25;
-      yesBtn.style.transform = `scale(${yesScale})`;
-
-      // Make NO smaller (and harder)
-      noScale *= 0.88;
-      noBtn.style.transform = `scale(${noScale})`;
-
-      moveNoButton();
-
-      // After enough clicks, hide "No"
-      if (noClicks >= 8 || noScale < 0.35) {
-        noBtn.style.opacity = "0";
-        noBtn.style.pointerEvents = "none";
-      }
-
-      // If YES is huge, also prevent layout weirdness
-      if (yesScale > 3.2) {
-        btnArea.style.height = "110px";
-      }
-    });
-
-    yesBtn.addEventListener("click", () => {
-      mainCard.style.display = "none";
-      finalCard.style.display = "block";
-    });
-
-    // On load, if user taps "No" quickly, it’s already positioned
-    moveNoButton();
-  </script>
+  yesBtn.addEventListener("click", () => {
+    mainCard.style.display = "none";
+    finalCard.style.display = "block";
+  });
+</script>
 </body>
 </html>  

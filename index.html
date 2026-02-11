@@ -10,6 +10,7 @@
       --text: #1b1b1b;
       --yes: #2ecc71;
       --no: #ff4757;
+      --dark: #111;
     }
 
     body {
@@ -60,7 +61,6 @@
       justify-content: center;
       gap: 14px;
       margin-top: 8px;
-      position: relative;
       height: 70px;
       align-items: center;
     }
@@ -89,12 +89,13 @@
 
     .final h2 {
       font-size: 28px;
-      margin: 8px 0 14px;
+      margin: 8px 0 10px;
     }
 
     .final .big {
       font-size: 18px;
       opacity: .85;
+      margin-bottom: 10px;
     }
 
     .hint {
@@ -102,18 +103,45 @@
       opacity: .55;
       margin-top: 12px;
     }
+
+    /* Plan reveal */
+    #planBtn {
+      margin-top: 14px;
+      background: var(--dark);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #planReveal {
+      display: none;
+      margin-top: 18px;
+      font-size: 16px;
+      line-height: 1.35;
+      animation: fadeIn .25s ease;
+    }
+
+    #planReveal p {
+      margin: 10px 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Page 1 -->
   <main class="card" id="mainCard">
     <div class="media">
-      <!-- Replace this with your Mickey GIF -->
-      <!-- Option A: local file in repo: /mickey.gif -->
       <img id="mainImg" src="mickey.gif" alt="mickey">
     </div>
 
-    <h1 id="question">Confirming Valentine proposal… are you ready? 💘</h1>
+    <h1 id="question">Confirming Valentine status… are you ready? 💘</h1>
 
     <div class="btns" id="btnArea">
       <button id="yesBtn">Yes</button>
@@ -123,74 +151,66 @@
     <div class="hint">Tip: clicking “No” won’t help...</div>
   </main>
 
+  <!-- Page 2 -->
   <section class="card final" id="finalCard">
-  <div class="media">
-    <img src="mickey-happy.gif" alt="yay">
-  </div>
-
-  <h2>Good choice.</h2>
-  <div class="big">Valentine status: confirmed 💘</div>
-
-  <button id="planBtn" style="
-    margin-top:18px;
-    background:#111;
-    color:white;
-    padding:12px 18px;
-    border-radius:12px;
-    font-weight:700;
-    cursor:pointer;
-  ">
-    See the plan? 😌
-  </button>
-
-  <div id="planReveal" style="display:none; margin-top:20px; font-size:16px;">
-    <p>🌄 All-day route. Just us.</p>
-    <p>🍽️ Dinner booked.</p>
-    <p>Location: classified.</p>
-    <p style="opacity:0.7;">Dress well. Trust me.</p>
-  </div>
-</section>
     <div class="media">
-      <!-- Replace with a celebration Mickey GIF if you want -->
-      <img id="mainImg" src="happy.gif" alt="happy">
+      <img src="happy.gif" alt="yay">
     </div>
-    <h2>YAYYYY!!! 🥰</h2>
-    <div class="big">You just made a great decision 😉</div>
+
+    <h2>Good choice.</h2>
+    <div class="big">Valentine status: confirmed 💘</div>
+
+    <button id="planBtn">See the plan? 😌</button>
+
+    <div id="planReveal">
+      <p>🌄 All-day route. Just us.</p>
+      <p>🍽️ Dinner booked.</p>
+      <p>Location: classified.</p>
+      <p style="opacity:0.7;">Dress well. Trust me.</p>
+    </div>
   </section>
 
   <script>
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
 
-  const mainCard = document.getElementById("mainCard");
-  const finalCard = document.getElementById("finalCard");
+    const mainCard = document.getElementById("mainCard");
+    const finalCard = document.getElementById("finalCard");
 
-  let yesScale = 1;
-  let noScale = 1;
-  let noClicks = 0;
+    const planBtn = document.getElementById("planBtn");
+    const planReveal = document.getElementById("planReveal");
 
-  noBtn.addEventListener("click", () => {
-    noClicks++;
+    let yesScale = 1;
+    let noScale = 1;
+    let noClicks = 0;
 
-    // YES grows
-    yesScale *= 1.3;
-    yesBtn.style.transform = `scale(${yesScale})`;
+    noBtn.addEventListener("click", () => {
+      noClicks++;
 
-    // NO shrinks
-    noScale *= 0.8;
-    noBtn.style.transform = `scale(${noScale})`;
+      // YES grows
+      yesScale *= 1.3;
+      yesBtn.style.transform = `scale(${yesScale})`;
 
-    // After enough clicks, remove NO completely
-    if (noClicks >= 6 || noScale < 0.3) {
-      noBtn.style.opacity = "0";
-      noBtn.style.pointerEvents = "none";
-    }
-  });
+      // NO shrinks (stays in same place)
+      noScale *= 0.8;
+      noBtn.style.transform = `scale(${noScale})`;
 
-  yesBtn.addEventListener("click", () => {
-    mainCard.style.display = "none";
-    finalCard.style.display = "block";
-  });
-</script>
+      // After enough clicks, remove NO completely
+      if (noClicks >= 6 || noScale < 0.3) {
+        noBtn.style.opacity = "0";
+        noBtn.style.pointerEvents = "none";
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      mainCard.style.display = "none";
+      finalCard.style.display = "block";
+    });
+
+    planBtn.addEventListener("click", () => {
+      planReveal.style.display = "block";
+      planBtn.style.display = "none";
+    });
+  </script>
 </body>
-</html>  
+</html>
